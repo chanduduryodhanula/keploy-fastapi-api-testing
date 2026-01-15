@@ -1,0 +1,30 @@
+version: api.keploy.io/v1beta1
+kind: Config
+metadata:
+  name: keploy-config
+spec:
+  app:
+    name: user-management-api
+    port: 8000
+    command: "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    proxyport: 8080
+    delay: 5
+  server:
+    url: http://localhost:8081
+  test:
+    filters:
+      globalNoise:
+        body:
+          - '.*"created_at".*'
+          - '.*"updated_at".*'
+          - '.*"user_id".*'
+        header:
+          - '.*"Date".*'
+          - '.*"Content-Length".*'
+      testNoise:
+        body:
+          - '.*"created_at".*'
+          - '.*"updated_at".*'
+          - '.*"user_id".*'
+    timeout: 60
+    path: ./tests
